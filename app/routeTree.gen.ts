@@ -11,10 +11,16 @@
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
+import { Route as StreamImport } from './routes/stream'
 import { Route as IndexImport } from './routes/index'
 import { Route as BoardsBoardIdImport } from './routes/boards.$boardId'
 
 // Create/Update Routes
+
+const StreamRoute = StreamImport.update({
+  path: '/stream',
+  getParentRoute: () => rootRoute,
+} as any)
 
 const IndexRoute = IndexImport.update({
   path: '/',
@@ -37,6 +43,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexImport
       parentRoute: typeof rootRoute
     }
+    '/stream': {
+      id: '/stream'
+      path: '/stream'
+      fullPath: '/stream'
+      preLoaderRoute: typeof StreamImport
+      parentRoute: typeof rootRoute
+    }
     '/boards/$boardId': {
       id: '/boards/$boardId'
       path: '/boards/$boardId'
@@ -51,36 +64,41 @@ declare module '@tanstack/react-router' {
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/stream': typeof StreamRoute
   '/boards/$boardId': typeof BoardsBoardIdRoute
 }
 
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/stream': typeof StreamRoute
   '/boards/$boardId': typeof BoardsBoardIdRoute
 }
 
 export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexRoute
+  '/stream': typeof StreamRoute
   '/boards/$boardId': typeof BoardsBoardIdRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/boards/$boardId'
+  fullPaths: '/' | '/stream' | '/boards/$boardId'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/boards/$boardId'
-  id: '__root__' | '/' | '/boards/$boardId'
+  to: '/' | '/stream' | '/boards/$boardId'
+  id: '__root__' | '/' | '/stream' | '/boards/$boardId'
   fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  StreamRoute: typeof StreamRoute
   BoardsBoardIdRoute: typeof BoardsBoardIdRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  StreamRoute: StreamRoute,
   BoardsBoardIdRoute: BoardsBoardIdRoute,
 }
 
@@ -97,11 +115,15 @@ export const routeTree = rootRoute
       "filePath": "__root.tsx",
       "children": [
         "/",
+        "/stream",
         "/boards/$boardId"
       ]
     },
     "/": {
       "filePath": "index.tsx"
+    },
+    "/stream": {
+      "filePath": "stream.tsx"
     },
     "/boards/$boardId": {
       "filePath": "boards.$boardId.tsx"
